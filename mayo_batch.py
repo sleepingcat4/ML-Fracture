@@ -12,7 +12,6 @@ def mayo_batch(url):
         return None
 
 def scrape_file(file_path):
-    scraped_data = {}
     try:
         with open(file_path, 'r') as file:
             urls = file.readlines()
@@ -20,15 +19,14 @@ def scrape_file(file_path):
                 url = url.strip()
                 text_data = mayo_batch(url)
                 if text_data:
-                    scraped_data[url] = text_data
+                    filename = url.split('/')[-1].split('.')[0] + '.json'
+                    with open(filename, 'w') as json_file:
+                        json.dump({'corpus': text_data}, json_file, indent=4)
                 else:
-                    print("No scrapping done", url)
+                    print("No scraping done for", url)
     except FileNotFoundError:
         print("File not found:", file_path)
-    
-    with open('mayo_saved.json', 'w') as json_file:
-        json.dump(scraped_data, json_file, indent=4)
 
-# example: how it should be run; provide a .txt file with all the urls that should be scrapped 
-# file_path = 'urls.txt'
-# scrape_file(file_path)
+# Example: how it should be run; provide a .txt file with all the URLs that should be scraped 
+file_path = 'link.txt'
+scrape_file(file_path)
